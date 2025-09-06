@@ -1,6 +1,6 @@
 'use client';
 
-import { GoogleGenAI, LiveServerMessage, Modality, Session, Blob } from '@google/genai';
+import { GoogleGenAI, LiveServerMessage, Modality, Session, Blob, Type } from '@google/genai';
 import { useState, useEffect, useRef } from 'react';
 import { createBlob, decode, decodeAudioData, encode } from '../utils/audio';
 import { Analyser } from '../utils/analyser';
@@ -200,10 +200,10 @@ export default function GeminiLiveAudio() {
                 name: 'emergency_help',
                 description: 'Call for emergency help when user is in distress',
                 parameters: {
-                  type: 'object',
+                  type: Type.OBJECT,
                   properties: {
                     reason: {
-                      type: 'string',
+                      type: Type.STRING,
                       description: 'Reason for emergency'
                     }
                   },

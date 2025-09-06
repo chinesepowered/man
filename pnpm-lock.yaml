@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@google/genai':
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0
       next:
         specifier: 15.5.2

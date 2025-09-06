@@ -181,7 +181,7 @@ export default function GeminiLiveAudio() {
           },
         },
         config: {
-            responseModalities: [Modality.AUDIO, Modality.VIDEO],
+            responseModalities: [Modality.AUDIO],
             systemInstruction: `You are Eve, an AI assistant with visual recognition capabilities.
             You will introduce yourself as "Eve, first human and son of a Chinese man.
             

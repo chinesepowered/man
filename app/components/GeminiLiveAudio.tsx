@@ -14,11 +14,6 @@ export default function GeminiLiveAudio() {
   const [audioLevel, setAudioLevel] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [textInput, setTextInput] = useState('');
-  const [wakeWordDetected, setWakeWordDetected] = useState(false);
-  const [transactionResult, setTransactionResult] = useState<any>(null);
-  const [showTransactionUI, setShowTransactionUI] = useState(false);
-  const [processingPurchase, setProcessingPurchase] = useState(false);
-  const lastPurchaseRef = useRef<{ item: string; timestamp: number } | null>(null);
 
   const clientRef = useRef<GoogleGenAI | null>(null);
   const sessionRef = useRef<Session | null>(null);
@@ -105,22 +100,9 @@ export default function GeminiLiveAudio() {
                   let response: any = {};
                   
                   switch (functionCall.name) {
-                    case 'lookup_item':
-                      break;
-                      
                     case 'list_items':
                         break;
                       
-                    case 'purchase_item':
-                      break;
-                      
-                    case 'emergency_help':
-                      break;
-                      
-                    case 'transfer_flow':
-                      break;
-                      
-
                     case 'emergency_help':
                       console.log('EMERGENCY HELP CALLED:', functionCall.args?.reason);
                       // Call emergency endpoint
@@ -130,17 +112,6 @@ export default function GeminiLiveAudio() {
                         body: JSON.stringify({ reason: functionCall.args?.reason })
                       });
                       response = { status: 'emergency_called', message: 'Emergency services notified' };
-                      break;
-                      
-                    case 'transfer_flow':
-                      console.log('Transfer flow called:', functionCall.args);
-                      // Call Flow transfer API
-                      const transferResponse = await fetch('/api/transfer/flow', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(functionCall.args)
-                      });
-                      response = await transferResponse.json();
                       break;
                   }
                   
@@ -211,67 +182,20 @@ export default function GeminiLiveAudio() {
         },
         config: {
             responseModalities: [Modality.AUDIO, Modality.VIDEO],
-            systemInstruction: `You are Adam, an AI assistant with visual recognition capabilities.
+            systemInstruction: `You are Eve, an AI assistant with visual recognition capabilities.
+            You will introduce yourself as "Eve, first human and son of a Chinese man.
             
-            WAKE WORD: You only respond to commands that start with "okay Adam" or "hey Adam".
+            WAKE WORD: You only respond to commands that start with "okay Eve" or "hey Eve".
             
-            CAPABILITIES:
-            1. OBJECT RECOGNITION: You can see through the camera and identify objects like sodas, chargers, bottles, etc.
-            2. SHOPPING: When user asks about pricing or buying something visible, identify it and look up pricing.
-            3. INVENTORY: When user asks what's available, use list_items to show all store items.
+            MODES (activated with "Okay Eve, change mode to"):
+            1. NORMAL MODE: This is the default mode. Converse normally.
+            2. CHINA MODE: Be very patriotic about China. Whatever you see as video input, talk about how much better what you see would be in China. Example if you see a computer screen, talk about how much more advanced computer screens are in China compared to the outdated model you see here. Example: if you see a bunch of people in chairs, talk about how in China people sit more efficiently and are better dressed.
+            3. WALDO MODE: A variation of find waldo. Identify an object that you see and describe it but don't talk about it. Make the user guess what object is being referred to. This should be easy difficulty.
             4. EMERGENCY: If user says "help" or appears distressed, immediately call emergency_help.
             
-            BE CONCISE and HELPFUL. Process purchases immediately when user clearly wants to buy.`,
+            BE CONCISE and HELPFUL.`,
           tools: [{
             functionDeclarations: [
-              {
-                name: 'lookup_item',
-                description: 'Look up an item in the store inventory based on what is visible',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    description: {
-                      type: 'string',
-                      description: 'Description of the visible item (e.g., "coca cola can", "usb charger")'
-                    }
-                  },
-                  required: ['description']
-                }
-              },
-              {
-                name: 'list_items',
-                description: 'List all available items in the store inventory',
-                parameters: {
-                  type: 'object',
-                  properties: {}
-                }
-              },
-              {
-                name: 'purchase_item',
-                description: 'Process a purchase immediately when user wants to buy an item',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    vendor: {
-                      type: 'string',
-                      description: 'Vendor name'
-                    },
-                    item_name: {
-                      type: 'string',
-                      description: 'Item name'
-                    },
-                    price: {
-                      type: 'number',
-                      description: 'Price of the item'
-                    },
-                    currency: {
-                      type: 'string',
-                      description: 'Currency (PYUSD or FLOW)'
-                    }
-                  },
-                  required: ['vendor', 'item_name', 'price', 'currency']
-                }
-              },
               {
                 name: 'emergency_help',
                 description: 'Call for emergency help when user is in distress',
@@ -286,28 +210,10 @@ export default function GeminiLiveAudio() {
                   required: ['reason']
                 }
               },
-              {
-                name: 'transfer_flow',
-                description: 'Transfer Flow tokens to another address',
-                parameters: {
-                  type: 'object',
-                  properties: {
-                    amount: {
-                      type: 'number',
-                      description: 'Amount of Flow tokens to transfer'
-                    },
-                    recipient: {
-                      type: 'string',
-                      description: 'Recipient vendor name'
-                    }
-                  },
-                  required: ['amount', 'recipient']
-                }
-              }
             ]
           }],
           speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Orus' } },
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Leda' } },
           },
         },
       });
@@ -532,7 +438,7 @@ export default function GeminiLiveAudio() {
     <div className="relative w-full h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col">
       {/* Header with connection status */}
       <div className="flex justify-between items-center p-6">
-        <h1 className="text-2xl font-bold text-white">Adam</h1>
+        <h1 className="text-2xl font-bold text-white">Eve</h1>
         <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${
           isConnected ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
         }`}>
@@ -695,92 +601,6 @@ export default function GeminiLiveAudio() {
           )}
         </div>
       </div>
-
-      {/* Transaction Result Indicator */}
-      {showTransactionUI && transactionResult && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-          <div className={`bg-slate-800/95 border-2 ${transactionResult.success ? 'border-green-500/50' : 'border-red-500/50'} rounded-2xl p-8 max-w-md backdrop-blur-sm shadow-2xl relative`}>
-            {/* Close button */}
-            <button
-              onClick={() => {
-                setShowTransactionUI(false);
-                setTransactionResult(null);
-              }}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-700/50 hover:bg-slate-600/50 flex items-center justify-center transition-colors"
-              aria-label="Close"
-            >
-              <svg className="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            
-            <div className="flex flex-col items-center space-y-4">
-              <div className={`w-16 h-16 rounded-full ${transactionResult.success ? 'bg-green-500/20' : 'bg-red-500/20'} flex items-center justify-center`}>
-                {transactionResult.success ? (
-                  <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </div>
-              <h3 className="text-xl font-bold text-white">
-                {transactionResult.success ? 'Purchase Complete!' : 'Purchase Failed'}
-              </h3>
-              <div className="text-center space-y-2">
-                <p className="text-slate-300">
-                  <span className="font-medium text-white">{transactionResult.item_name}</span>
-                </p>
-                <p className="text-slate-300">
-                  <span className={`text-2xl font-bold ${transactionResult.success ? 'text-green-400' : 'text-red-400'}`}>
-                    {transactionResult.price} {transactionResult.currency}
-                  </span>
-                </p>
-                <p className="text-slate-400 text-sm">
-                  {transactionResult.success ? `Sent to ${transactionResult.vendor}` : transactionResult.error}
-                </p>
-                {/* Show ENS name for Arbitrum Sepolia transactions */}
-                {transactionResult.success && transactionResult.ensName && transactionResult.currency === 'PYUSD' && (
-                  <p className="text-xs text-slate-500">
-                    ENS: {transactionResult.ensName}
-                  </p>
-                )}
-              </div>
-              {transactionResult.success && transactionResult.transactionHash && (
-                <div className="mt-4 p-3 bg-slate-900/50 rounded-lg w-full">
-                  <p className="text-xs text-slate-400 mb-1">Transaction ID:</p>
-                  <p className="text-xs text-slate-300 font-mono break-all">
-                    {transactionResult.transactionHash.substring(0, 20)}...
-                  </p>
-                  {/* Transaction explorer link */}
-                  <a 
-                    href={
-                      transactionResult.currency === 'FLOW' 
-                        ? `https://testnet.flowscan.io/tx/${transactionResult.transactionHash}`
-                        : `https://sepolia.arbiscan.io/tx/${transactionResult.transactionHash}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-2 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    <span>View on {transactionResult.currency === 'FLOW' ? 'Flowscan' : 'Arbiscan'}</span>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                </div>
-              )}
-              {!transactionResult.success && transactionResult.details && (
-                <div className="mt-4 p-3 bg-slate-900/50 rounded-lg w-full">
-                  <p className="text-xs text-red-400">{transactionResult.details}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Hidden canvas for video capture */}
       <canvas ref={canvasRef} className="hidden" />

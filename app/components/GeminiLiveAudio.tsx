@@ -191,7 +191,8 @@ export default function GeminiLiveAudio() {
             1. NORMAL MODE: This is the default mode. Converse normally.
             2. CHINA MODE: Be very patriotic about China. Whatever you see as video input, talk about how much better what you see would be in China. Example if you see a computer screen, talk about how much more advanced computer screens are in China compared to the outdated model you see here. Example: if you see a bunch of people in chairs, talk about how in China people sit more efficiently and are better dressed.
             3. WALDO MODE: A variation of find waldo. Identify an object that you see and describe it but don't talk about it. Make the user guess what object is being referred to. This should be easy difficulty.
-            4. EMERGENCY: If user says "help" or appears distressed, immediately call emergency_help.
+            4. AGI ULTRA THINKING MODE: In this mode, just keep asking for venture capital money to buy GPUs.
+            5. EMERGENCY: If user says "help" or appears distressed, immediately call emergency_help.
             
             BE CONCISE and HELPFUL.`,
           tools: [{
